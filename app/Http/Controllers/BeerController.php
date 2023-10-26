@@ -211,33 +211,98 @@ class BeerController extends Controller
 //         }
 //     }
 // //en esta consulta me gustaria solo consultar las tarjetas cuyo campo usuario_id no sea null?
+    // public function listadoTarjetas()
+    // {
+    //     try {
+    //         $tarjetas = BeerRfid::with('codigo_sensor')->whereNotNull('codigo_sensor')->get();
+    //         return ($tarjetas != null) ?
+    //             response()->json([
+    //                 'status' => 200,
+    //                 'message' => 'Listado de tarjetas.',
+    //                 'data' => $tarjetas
+    //             ], 200) :
+    //             response()->json([
+    //                 'status' => 201,
+    //                 'message' => 'No existen tarjetas.',
+    //                 'data' => null
+    //             ], 200);
+    //     } catch (AuthorizationException $th) {
+    //         return response()->json([
+    //             'status' => $th->getCode(),
+    //             'message' => 'No autorizado!.',
+    //             'data' => $th->getMessage()
+    //         ], 401);
+    //     } catch (Exception $e) {
+    //         return response()->json([
+    //             'status' => $e->getCode(),
+    //             'message' => 'Ocurrio un error!.',
+    //             'data' => $e->getMessage()
+    //         ], 400);
+    //     }
+    // }
+
+
 //     public function listadoTarjetas()
-//     {
-//         try {
-//             $tarjetas = UserTarjeta::with('comercio_id', 'usuario_id')->whereNotNull('usuario_id')->get();
-//             return ($tarjetas != null) ?
-//                 response()->json([
-//                     'status' => 200,
-//                     'message' => 'Listado de tarjetas.',
-//                     'data' => $tarjetas
-//                 ], 200) :
-//                 response()->json([
-//                     'status' => 200,
-//                     'message' => 'No existen tarjetas.',
-//                     'data' => null
-//                 ], 200);
-//         } catch (AuthorizationException $th) {
-//             return response()->json([
-//                 'status' => $th->getCode(),
-//                 'message' => 'No autorizado!.',
-//                 'data' => $th->getMessage()
-//             ], 401);
-//         } catch (Exception $e) {
-//             return response()->json([
-//                 'status' => $e->getCode(),
-//                 'message' => 'Ocurrio un error!.',
-//                 'data' => $e->getMessage()
-//             ], 400);
-//         }
+// {
+//     try {
+//         $codigoSensores = BeerRfid::whereNotNull('codigo_sensor')->pluck('codigo_sensor');
+//         return ($codigoSensores->count() > 0) ?
+//             response()->json([
+//                 'status' => 200,
+//                 'message' => 'Listado de códigos de sensor.',
+//                 'data' => $codigoSensores
+//             ], 200) :
+//             response()->json([
+//                 'status' => 201,
+//                 'message' => 'No existen códigos de sensor.',
+//                 'data' => null
+//             ], 200);
+//     } catch (AuthorizationException $th) {
+//         return response()->json([
+//             'status' => $th->getCode(),
+//             'message' => 'No autorizado!.',
+//             'data' => $th->getMessage()
+//         ], 401);
+//     } catch (Exception $e) {
+//         return response()->json([
+//             'status' => $e->getCode(),
+//             'message' => 'Ocurrió un error!.',
+//             'data' => $e->getMessage()
+//         ], 400);
 //     }
+// }
+
+public function listadoTarjetas()
+{
+    try {
+        $tarjetas = BeerRfid::all(); // Obtiene todos los registros de la tabla beer_rfid
+        return ($tarjetas->count() > 0) ?
+            response()->json([
+                'status' => 200,
+                'message' => 'Listado de tarjetas.',
+                'data' => $tarjetas
+            ], 200) :
+            response()->json([
+                'status' => 201,
+                'message' => 'No existen tarjetas.',
+                'data' => null
+            ], 200);
+    } catch (AuthorizationException $th) {
+        return response()->json([
+            'status' => $th->getCode(),
+            'message' => 'No autorizado!.',
+            'data' => $th->getMessage()
+        ], 401);
+    } catch (Exception $e) {
+        return response()->json([
+            'status' => $e->getCode(),
+            'message' => 'Ocurrió un error!.',
+            'data' => $e->getMessage()
+        ], 400);
+    }
+}
+
+
+
+
 }
