@@ -302,7 +302,4 @@ public function listadoTarjetas()
     }
 }
 
-
-
-
 }
