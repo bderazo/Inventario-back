@@ -102,6 +102,8 @@ Route::controller(BeerController::class)->group(function () {
     Route::post('usuario/beer/crear', 'crearBeerCode');
     Route::post('usuario/beer/consultar/{id}', 'verificarID');
     Route::post('usuario/beer/listar', 'listadoTarjetas');
+    Route::post('usuario/beer/asignar', 'asignarTarjeta');
+
     // Route::post('usuario/tarjeta/actualizar/{id}', 'actualizarUserTarjeta');
     // Route::post('usuario/tarjeta/ver/{id}', 'verTarjetaUser');
     // Route::post('usuario/tarjeta/listar', 'listadoTarjetas');

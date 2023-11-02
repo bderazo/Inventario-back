@@ -69,13 +69,93 @@ class BeerController extends Controller
 
     public function verificarID($id)
     {
-        // Realiza la consulta en la base de datos
-        $registro = BeerRfid::where('codigo_sensor', $id)->first();
+        try {
+                $registro = BeerRfid::where('codigo_sensor', $id)->first();
 
-        if ($registro) {
-            return response()->json(['existe' => true, 'data' => $registro]);
-        } else {
-            return response()->json(['existe' => false]);
+                // dd($registro);
+                if ($registro != null) {
+                    if($registro->usuario_id){
+                        if($registro->cupo_max>4){
+                            return response()->json([
+                                'status' => 200,
+                                'message' => true,
+                                'data' => $registro
+                            ]);
+                        }else{
+                            $registro = BeerRfid::find($registro->id);
+                            if (!$registro) {
+                                return "Registro no encontrado";
+                            }
+                            $registro->estado = 0;
+                            $registro->save();
+                            return response()->json([
+                                'status' => 200,
+                                'message' => false,
+                                'data' => null,
+                            ]);
+                        }
+                        return response()->json([
+                            'status' => 200,
+                            'message' => 'Datos de la tarjeta para back.',
+                            'data' => $registro
+                        ]);
+                    }else{
+                        return response()->json([
+                            'status' => 200,
+                            'message' => 'Tarjeta dispononible.',
+                            'data' => $registro
+                        ]);
+                    }
+                } else {
+                    return response()->json([
+                        'status' => 200,
+                        'message' => 'No se encontro tarjeta beer.',
+                        'data' => null
+                    ]);
+                }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'Ocurrio un error!.',
+                'data' => $th->getMessage()
+            ], 400);
+        }
+    }
+
+    public function asignarTarjeta(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'usuario_id' => 'required|exists:usuarios,id',
+                'codigo_sensor' => 'required|exists:beer_rfid,codigo_sensor',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Error al validar los datos de entrada.',
+                    'data' => $validator->errors()
+                ], 422);
+            } else {
+                $registro = BeerRfid::where('codigo_sensor', $request->codigo_sensor)->first();
+
+                return response()->json([
+                    'status' => 201,
+                    'message' => 'Tarjeta y usuario validos.',
+                    'data' => $registro,
+                ], 201);
+            }
+        } catch (AuthorizationException $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'No autorizado!.',
+                'data' => $th->getMessage()
+            ], 401);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => $e->getCode(),
+                'message' => 'Ocurrio un error!.',
+                'data' => $e->getMessage()
+            ], 400);
         }
     }
 //     public function cargar(Request $request)

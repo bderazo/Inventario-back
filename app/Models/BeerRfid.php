@@ -25,20 +25,20 @@ class BeerRfid extends Model
     ];
 
 
-    // public function usuario_id(): BelongsTo
-    // {
-    //     return $this->belongsTo(Usuario::class, 'id');
-    // }
+    public function usuario_id(): BelongsTo
+    {
+        return $this->belongsTo(Usuario::class, 'id');
+    }
 
-    // public function usuario_registra(): BelongsTo
-    // {
-    //     return $this->belongsTo(Usuario::class, 'id');
-    // }
+    public function usuario_registra(): BelongsTo
+    {
+        return $this->belongsTo(Usuario::class, 'id');
+    }
 
-    // public function venta(): HasMany
-    // {
-    //     return $this->hasMany(Venta::class);
-    // }
+    public function venta(): HasMany
+    {
+        return $this->hasMany(Venta::class);
+    }
 
   
     /**
