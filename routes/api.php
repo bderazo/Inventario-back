@@ -100,13 +100,12 @@ Route::controller(ProductoController::class)->group(function () {
 //TARJETA DE USUARIO
 Route::controller(BeerController::class)->group(function () {
     Route::post('usuario/beer/crear', 'crearBeerCode');
-    Route::post('usuario/beer/consultar/{id}', 'verificarID');
+    Route::post('sensor/beer/escanear', 'escanearSensor');
     Route::post('usuario/beer/listar', 'listadoTarjetas');
     Route::post('usuario/beer/asignar', 'asignarTarjeta');
-
-    // Route::post('usuario/tarjeta/actualizar/{id}', 'actualizarUserTarjeta');
-    // Route::post('usuario/tarjeta/ver/{id}', 'verTarjetaUser');
-    // Route::post('usuario/tarjeta/listar', 'listadoTarjetas');
-    // Route::post('usuario/tarjeta/cargar', 'cargar');
-    // Route::post('verificar-id/{id}', 'verificarID');
+    Route::post('sensor/beer/vaciar', 'limpiarTarjeta');
+    Route::post('usuarios/beer/listar', 'listadoUsuariosBeer');
+    Route::post('maquinas/beer/listar', 'listadoMaquinas');
+    Route::post('maquinas/beer/activar', 'activarMaquina');
+    Route::post('maquina/beer/ver', 'verMaquina');
 });

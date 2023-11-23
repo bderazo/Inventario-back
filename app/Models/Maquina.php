@@ -14,6 +14,7 @@ class Maquina extends Model
     protected $table = 'maquinas';
     public $incrementing = false;
     protected $keyType = 'uuid';
+    public $timestamps = false;
     protected $fillable = [
         'tipo',
         'ubicacion',

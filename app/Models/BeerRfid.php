@@ -27,12 +27,12 @@ class BeerRfid extends Model
 
     public function usuario_id(): BelongsTo
     {
-        return $this->belongsTo(Usuario::class, 'id');
+        return $this->belongsTo(Usuario::class, 'usuario_id');
     }
 
     public function usuario_registra(): BelongsTo
     {
-        return $this->belongsTo(Usuario::class, 'id');
+        return $this->belongsTo(Usuario::class, 'usuario_registra');
     }
 
     public function venta(): HasMany

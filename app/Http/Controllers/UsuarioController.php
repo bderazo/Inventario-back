@@ -45,7 +45,7 @@ class UsuarioController extends Controller
                     'identificacion' => $request->identificacion,
                     'registrado_por' => $request->registrado_por,
                 ]);
-                $input = $request->only('correo');
+                // $input = $request->only('correo');
                 return response()->json([
                     'status' => 201,
                     'message' => 'Usuario creado correctamente.',
