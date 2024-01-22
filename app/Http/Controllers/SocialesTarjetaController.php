@@ -16,7 +16,7 @@ class SocialesTarjetaController extends Controller
         // $this->middleware('auth:api');
     }
 
-    
+
     public function crearSocialesTarjeta(Request $request)
     {
         try {
@@ -99,7 +99,7 @@ class SocialesTarjetaController extends Controller
     public function encontrarPorUrlLabel(Request $request)
     {
         try {
-            $registro = SocialesTarjeta::where('tipo_social', $request->url)->first();
+            $registro = SocialesTarjeta::where('id', $request->id)->first();
 
             // Verificar si se encontró el registro
             if ($registro) {
@@ -132,7 +132,7 @@ class SocialesTarjetaController extends Controller
     public function clicUrlLabel(Request $request)
     {
         try {
-            $registro = SocialesTarjeta::where('tipo_social', $request->url)->first();
+            $registro = SocialesTarjeta::where('id', $request->id)->first();
 
             // Verificar si se encontró el registro
             if ($registro) {
