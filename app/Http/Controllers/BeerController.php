@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ArrayExport;
 use App\Models\BeerRfid;
+use App\Models\Ventas;
 use App\Models\Usuario;
 use App\Models\Maquina;
 use Exception;
@@ -74,7 +75,7 @@ class BeerController extends Controller
     public function escanearSensor(Request $request)
     {
         try {
-                $validator = Validator::make($request->all(), [
+                $validator = Validator::make($request->query(), [
                     'id_maquina' => 'required|exists:maquinas,id',
                     'codigo_sensor' => 'required|exists:beer_rfid,codigo_sensor',
                 ]);
@@ -90,33 +91,35 @@ class BeerController extends Controller
                     $sensor = BeerRfid::where('codigo_sensor', $request->codigo_sensor)->first();
                     if($maquina){
                         if($sensor){
-                            if($maquina->estado === 1 && $sensor->estado === 1){
-                                if($sensor->cupo_max < $maquina->cantidad){
+                            if(intval($maquina->estado) === 1){
+                                if(intval($sensor->estado) === 1){
+                                    if($sensor->cupo_max < $maquina->cantidad){
+                                        return response()->json([
+                                            'status' => 202,
+                                            'message' => 'Sensor habilitado.',
+                                            'data' => $sensor
+                                        ], 202);
+                                    }else{
+                                        return response()->json([
+                                            'status' => 203,
+                                            'message' => 'Maquina habilitada.',
+                                            'data' => $maquina
+                                        ], 203);
+                                    }
+                                }elseif(intval($sensor->estado) === 0){
+                                    $maquina->codigo_sensor = $sensor->codigo_sensor;
+                                    $maquina->save();
                                     return response()->json([
-                                        'status' => 202,
-                                        'message' => 'Sensor habilitado.',
-                                        'data' => $sensor
-                                    ], 202);
-                                }else{
-                                    return response()->json([
-                                        'status' => 203,
-                                        'message' => 'Maquina habilitada.',
+                                        'status' => 200,
+                                        'message' => 'Alerta: Sensor enviada.',
                                         'data' => $maquina
-                                    ], 203);
+                                    ], 200);
                                 }
-                            }else if($maquina->estado === 1 && $sensor->estado === 0){
-                                $maquina->codigo_sensor = $sensor->codigo_sensor;
-                                $maquina->save();
-                                return response()->json([
-                                    'status' => 200,
-                                    'message' => 'Alerta: Sensor enviada.',
-                                    'data' => $maquina
-                                ], 200);
                             }else{
                                 return response()->json([
                                     'status' => 201,
                                     'message' => 'Maquina deshabilitada.',
-                                    'data' => $maquina
+                                    'data' => false
                                 ], 201);
                             }
                         }else{
@@ -134,51 +137,6 @@ class BeerController extends Controller
                         ], 404);
                     }
                 }
-
-                // // $registro = BeerRfid::where('codigo_sensor', $id)->first();
-                // $registro = BeerRfid::where('codigo_sensor', $id)->with(['usuario_id', 'usuario_registra'])->first();
-
-                // // dd($registro);
-                // if ($registro != null) {
-                //     if($registro->usuario_id){
-                //         if($registro->cupo_max>1){
-                //             return response()->json([
-                //                 'status' => 200,
-                //                 'message' => true,
-                //                 'data' => $registro
-                //             ]);
-                //         }else{
-                //             $registro = BeerRfid::find($registro->id);
-                //             if (!$registro) {
-                //                 return "Registro no encontrado";
-                //             }
-                //             $registro->estado = 0;
-                //             $registro->save();
-                //             return response()->json([
-                //                 'status' => 200,
-                //                 'message' => false,
-                //                 'data' => null,
-                //             ]);
-                //         }
-                //         return response()->json([
-                //             'status' => 200,
-                //             'message' => 'Datos de la tarjeta para back.',
-                //             'data' => $registro
-                //         ]);
-                //     }else{
-                //         return response()->json([
-                //             'status' => 200,
-                //             'message' => 'Tarjeta dispononible.',
-                //             'data' => $registro
-                //         ]);
-                //     }
-                // } else {
-                //     return response()->json([
-                //         'status' => 200,
-                //         'message' => 'No se encontro tarjeta beer.',
-                //         'data' => null
-                //     ]);
-                // }
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => $th->getCode(),
@@ -278,7 +236,7 @@ class BeerController extends Controller
                             'message' => 'Sensor vaciado con éxito.',
                             'data' => $registro,
                         ], 201);
-                    
+
                 } else {
                     return response()->json([
                         'status' => 404,
@@ -305,7 +263,7 @@ class BeerController extends Controller
     {
         try {
             // Obtiene todos los registros de la tabla beer_rfid
-            $tarjetas = BeerRfid::with(['usuario_id', 'usuario_registra'])->get(); 
+            $tarjetas = BeerRfid::with(['usuario', 'usuario_registra'])->get();
             return ($tarjetas->count() > 0) ?
                 response()->json([
                     'status' => 200,
@@ -397,7 +355,7 @@ class BeerController extends Controller
     public function activarMaquina(Request $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
+            $validator = Validator::make($request->query(), [
                 'id_maquina' => 'required|exists:maquinas,id',
                 'estado' => 'required',
             ]);
@@ -421,7 +379,7 @@ class BeerController extends Controller
                             'message' => 'Maquina encendida.',
                             'data' => $maquina,
                         ], 201);
-                 
+
                 } else {
                     return response()->json([
                         'status' => 404,
@@ -464,7 +422,7 @@ class BeerController extends Controller
                             'message' => 'Maquina encontrada.',
                             'data' => $maquina,
                         ], 201);
-                 
+
                 } else {
                     return response()->json([
                         'status' => 404,
@@ -487,4 +445,218 @@ class BeerController extends Controller
         }
     }
 
+    public function borrarSensorMaquina(Request $request)
+    {
+        try {
+                $validator = Validator::make($request->all(), [
+                    'codigo_sensor' => 'required|exists:beer_rfid,codigo_sensor',
+                ]);
+
+                if ($validator->fails()) {
+                    return response()->json([
+                        'status' => 422,
+                        'message' => 'Error al validar los datos de entrada.',
+                        'data' => $validator->errors()
+                    ], 422);
+                }else{
+                    $maquina = Maquina::where('codigo_sensor', $request->codigo_sensor)->first();
+                    if($maquina->codigo_sensor){
+                        $maquina->codigo_sensor = '';
+                        $maquina->save();
+                        return response()->json([
+                            'status' => 200,
+                            'message' => 'Sensor borrado.',
+                            'data' => $maquina
+                        ], 200);
+                    }else{
+                        return response()->json([
+                            'status' => 404,
+                            'message' => 'Maquina no encontrada.',
+                            'data' => null
+                        ], 404);
+                    }
+                }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'Ocurrio un error!.',
+                'data' => $th->getMessage()
+            ], 400);
+        }
+    }
+
+    public function crearVenta(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->query(), [
+                'id_beer' => 'required|exists:beer_rfid,codigo_sensor',
+                'total' => 'required',
+                'id_maquina' => 'required|exists:maquinas,id',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Error al validar los datos de entrada.',
+                    'data' => $validator->errors()
+                ], 422);
+            } else {
+                $sensor = BeerRfid::where('codigo_sensor', $request->id_beer)->first();
+                $maquina = Maquina::where('id', $request->id_maquina)->first();
+                    if($sensor->usuario_id && $maquina){
+                        $sensor->cupo_max = round($sensor->cupo_max, 2) - round($request->total, 2);
+                        $sensor->save();
+                        $maquina->cantidad = round($maquina->cantidad, 2) - round($request->total, 2);
+                        $maquina->save();
+                        $tarjeta = new Ventas([
+                            'id_beer' => $sensor->id,
+                            'total' => round($request->total, 2),
+                            'precio' => round($maquina->precio, 2) * round($request->total, 2),
+                            'id_maquina' => $request->id_maquina,
+                            'estado' => 0,
+                        ]);
+                        $tarjeta->save();
+                        return response()->json([
+                            'status' => 201,
+                            'message' => 'Venta beer creada correctamente.',
+                            'data' => $tarjeta
+                        ], 201);
+                    }else{
+                        return response()->json([
+                            'status' => 404,
+                            'message' => 'Tarjeta no asignada o maquina no encontrada.',
+                            'data' => null
+                        ], 404);
+                    }
+
+            }
+        } catch (AuthorizationException $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'No autorizado!.',
+                'data' => $th->getMessage()
+            ], 401);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => $e->getCode(),
+                'message' => 'Ocurrio un error!.',
+                'data' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function verVentas(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'codigo_sensor' => 'required|exists:beer_rfid,codigo_sensor',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Error al validar los datos de entrada.',
+                    'data' => $validator->errors()
+                ], 422);
+            } else {
+                $sensor = BeerRfid::where('codigo_sensor', $request->codigo_sensor)->first();
+                if ($sensor) {
+                    // Verifica si la relación 'venta' está cargada
+                    if ($sensor->relationLoaded('ventas')) {
+                        $ventas = $sensor->venta->where('estado', 0)->load('maquina', 'beer.usuario')->values();
+                    } else {
+                        // Si no está cargada, carga la relación 'venta' y filtra por estado
+                        $ventas = $sensor->load('ventas.maquina', 'ventas.beer.usuario')->ventas->where('estado', 0)->values();
+                    }
+
+                    return response()->json([
+                        'status' => 201,
+                        'message' => 'Sensor encontrado.',
+                        'data' => [
+                            'ventas' => $ventas,
+                        ],
+                    ], 201);
+                } else {
+                    return response()->json([
+                        'status' => 404,
+                        'message' => 'Sensor no encontrada.',
+                    ], 404);
+                }
+            }
+        } catch (AuthorizationException $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'No autorizado!.',
+                'data' => $th->getMessage()
+            ], 401);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => $e->getCode(),
+                'message' => 'Ocurrio un error!.',
+                'data' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function pagarVentas(Request $request){
+        try {
+            $validator = Validator::make($request->all(), [
+                'codigo_sensor' => 'required|exists:beer_rfid,codigo_sensor',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'Error al validar los datos de entrada.',
+                    'data' => $validator->errors()
+                ], 422);
+            } else {
+                $sensor = BeerRfid::where('codigo_sensor', $request->codigo_sensor)->first();
+                if ($sensor) {
+                    // Verifica si la relación 'venta' está cargada
+                    if ($sensor->relationLoaded('ventas')) {
+                        $ventas = $sensor->venta->where('estado', 0)->load('maquina', 'beer.usuario')->values();
+                    } else {
+                        // Si no está cargada, carga la relación 'venta' y filtra por estado
+                        $ventas = $sensor->load('ventas.maquina', 'ventas.beer.usuario')->ventas->where('estado', 0)->values();
+                    }
+                    // Actualizar el estado de todas las ventas
+                    foreach ($ventas as $venta) {
+                        $venta->estado = 1; // Cambia el estado según tus necesidades
+                        $venta->usuario_registra = $sensor->usuario_registra;
+                        $venta->save();
+                    }
+                    // Verifica si todas las ventas tienen estado 1
+                    $todasVentasEstadoUno = $ventas->every(function ($venta) {
+                        return $venta->estado == 1;
+                    });
+
+                    if ($todasVentasEstadoUno) {
+                        $this->limpiarTarjeta($request);
+                    }
+                    return response()->json([
+                        'status' => 201,
+                        'message' => 'Ventas pagadas.',
+                        'data' => [
+                            'ventas' => $ventas,
+                        ],
+                    ], 201);
+                } else {
+                    return response()->json([
+                        'status' => 404,
+                        'message' => 'Sensor no encontrado.',
+                    ], 404);
+                }
+            }
+        } catch (AuthorizationException $th) {
+            return response()->json([
+                'status' => $th->getCode(),
+                'message' => 'No autorizado!.',
+                'data' => $th->getMessage()
+            ], 401);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => $e->getCode(),
+                'message' => 'Ocurrio un error!.',
+                'data' => $e->getMessage()
+            ], 400);
+        }
+    }
 }

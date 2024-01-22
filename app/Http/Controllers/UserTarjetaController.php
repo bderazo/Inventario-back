@@ -34,6 +34,9 @@ class UserTarjetaController extends Controller
                 'direccion' => 'nullable',
                 'correo' => 'nullable',
                 'sitio_web' => 'nullable',
+                'titulo'=> 'nullable',
+                'whatsapp' => 'nullable',
+                'telegram' => 'nullable',
             ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -56,6 +59,9 @@ class UserTarjetaController extends Controller
                     'direccion' => $request->direccion,
                     'correo' => $request->correo,
                     'sitio_web' => $request->sitio_web,
+                    'titulo' => $request->titulo,
+                    'whatsapp' => $request->whatsapp,
+                    'telegram' => $request->telegram,
                 ]);
                 $tarjeta->id = 'EC' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT); // Genera una cadena aleatoria de 8 caracteres (EC+ 6 digitos)
                 $tarjeta->save();
@@ -102,6 +108,9 @@ class UserTarjetaController extends Controller
                     'direccion' => $request->direccion,
                     'correo' => $request->correo,
                     'sitio_web' => $request->sitio_web,
+                    'titulo' => $request->titulo,
+                    'whatsapp' => $request->whatsapp,
+                    'telegram' => $request->telegram,
                 ]);
 
                 $tarjeta->id = 'EC' . str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT); // Genera una cadena aleatoria de 8 caracteres (EC+ 6 digitos)

@@ -18,22 +18,21 @@ class Ventas extends Model
         'id_beer',
         'total',
         'precio',
+        'id_maquina',
+        'estado',
     ];
 
 
-    public function id_beer(): BelongsTo
+    public function beer(): BelongsTo
     {
-        return $this->belongsTo(beer_rfid::class, 'id');
+        return $this->belongsTo(BeerRfid::class, 'id_beer');
     }
 
-    
-
-    public function venta(): HasMany
+    public function maquina(): BelongsTo
     {
-        return $this->hasMany(MaquinaVenta::class);
+        return $this->belongsTo(Maquina::class, 'id_maquina');
     }
 
-  
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -53,3 +52,4 @@ class Ventas extends Model
     {
         return [];
     }
+}

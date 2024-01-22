@@ -28,11 +28,16 @@ class UserTarjeta extends Model
         'direccion',
         'correo',
         'sitio_web',
+        'titulo',
         'wallet',
         'clics_realizados',
         'clics_guardar',
         'clics_correo',
         'clics_sitio_web',
+        'whatsapp',
+        'telegram',
+        'clic_referidos',
+        'clic_pagados'
     ];
 
 

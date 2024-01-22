@@ -19,14 +19,12 @@ class Maquina extends Model
         'tipo',
         'ubicacion',
         'cantidad',
-        'precio',
+        'precio', 
     ];
 
-    
-
-    public function maquina_Ventas(): HasMany
+    public function venta(): HasMany
     {
-        return $this->hasMany(MaquinaVenta::class);
+        return $this->hasMany(Ventas::class, 'id_maquina');
     }
 
   

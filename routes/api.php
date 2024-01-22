@@ -97,15 +97,19 @@ Route::controller(ProductoController::class)->group(function () {
     Route::post('productos/categorias/listar', 'listarProductosIdComercioCategoria'); //paginado de 10 en 10
 });
 
-//TARJETA DE USUARIO
+//Maquina cerveza
 Route::controller(BeerController::class)->group(function () {
     Route::post('usuario/beer/crear', 'crearBeerCode');
-    Route::post('sensor/beer/escanear', 'escanearSensor');
+    Route::get('sensor/beer/escanear', 'escanearSensor');
     Route::post('usuario/beer/listar', 'listadoTarjetas');
     Route::post('usuario/beer/asignar', 'asignarTarjeta');
     Route::post('sensor/beer/vaciar', 'limpiarTarjeta');
     Route::post('usuarios/beer/listar', 'listadoUsuariosBeer');
     Route::post('maquinas/beer/listar', 'listadoMaquinas');
-    Route::post('maquinas/beer/activar', 'activarMaquina');
+    Route::get('maquinas/beer/activar', 'activarMaquina');
     Route::post('maquina/beer/ver', 'verMaquina');
+    Route::post('sensor/maquina/borrar', 'borrarSensorMaquina');
+    Route::get('sensor/maquina/venta', 'crearVenta');
+    Route::post('sensor/ventas/ver', 'verVentas');
+    Route::post('sensor/ventas/pagar', 'pagarVentas');
 });

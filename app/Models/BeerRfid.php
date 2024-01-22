@@ -25,7 +25,7 @@ class BeerRfid extends Model
     ];
 
 
-    public function usuario_id(): BelongsTo
+    public function usuario(): BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'usuario_id');
     }
@@ -35,12 +35,12 @@ class BeerRfid extends Model
         return $this->belongsTo(Usuario::class, 'usuario_registra');
     }
 
-    public function venta(): HasMany
+    public function ventas(): HasMany
     {
-        return $this->hasMany(Venta::class);
+        return $this->hasMany(Ventas::class, 'id_beer');
     }
 
-  
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
