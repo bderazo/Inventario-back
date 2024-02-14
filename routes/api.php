@@ -9,6 +9,7 @@ use App\Http\Controllers\UserTarjetaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ComercioController;
 use App\Http\Controllers\BeerController;
+use App\Http\Controllers\PagosController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -72,6 +73,7 @@ Route::controller(UserTarjetaController::class)->group(function () {
     Route::post('usuario/tarjeta/listar', 'listadoTarjetas');
     Route::post('usuario/tarjeta/cargar', 'cargar');
     Route::post('verificar-id/{id}', 'verificarID');
+    Route::post('enviar/sms', 'enviarSms');
 });
 
 //SOCIALES DE TARJETA DE USUARIO
@@ -80,6 +82,14 @@ Route::controller(SocialesTarjetaController::class)->group(function () {
     Route::post('tarjeta/sociales/actualizar/{id}', 'actualizarSocialesTarjeta');
     Route::post('sociales/actualizar/label', 'encontrarPorUrlLabel');
     Route::post('sociales/clic', 'clicUrlLabel');
+});
+
+//PAGOS REALIZADOS A CADA USUARIO POR SUS VENTAS
+Route::controller(PagosController::class)->group(function () {
+    Route::post('pagos/realizados/crear', 'crearPago');
+    Route::post('pagos/realizados/actualizar/{id}', 'actualizarPago');
+    Route::post('pagos/realizados/ver/{id}', 'verPago');
+    Route::post('pagos/realizados/listar', 'listarPagos');
 });
 
 //CONFIGURACIONES DE TARJETA DE USUARIO

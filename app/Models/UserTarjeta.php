@@ -37,7 +37,11 @@ class UserTarjeta extends Model
         'whatsapp',
         'telegram',
         'clic_referidos',
-        'clic_pagados'
+        'clic_pagados',
+        'clic_cobrar',
+        'efectivo_reviews',
+        'efectivo_menu',
+        'informacion_bancaria'
     ];
 
 
@@ -54,6 +58,11 @@ class UserTarjeta extends Model
     public function socialesTarjeta(): HasMany
     {
         return $this->hasMany(SocialesTarjeta::class);
+    }
+
+    public function pagos(): HasMany
+    {
+        return $this->hasMany(Pagos::class);
     }
 
     public function configuracionesTarjeta(): HasMany

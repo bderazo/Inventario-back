@@ -9,6 +9,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
+use Twilio\Rest\Client;
 
 class UserTarjetaController extends Controller
 {
@@ -244,6 +245,39 @@ class UserTarjetaController extends Controller
                 'data' => $th->getMessage()
             ], 401);
         } catch (Exception $e) {
+            return response()->json([
+                'status' => $e->getCode(),
+                'message' => 'Ocurrio un error!.',
+                'data' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function enviarSms(){
+        try{
+            $account_sid = 'ACe04bac2927f81f4b9244f08790aac216';
+            $auth_token = '45b3e6e661539dde6204b491eedcaa5b';
+            // In production, these should be environment variables. E.g.:
+            // $auth_token = $_ENV["TWILIO_AUTH_TOKEN"]
+
+            // A Twilio number you own with SMS capabilities
+            $twilio_number = "+12407248563";
+
+            $client = new Client($account_sid, $auth_token);
+            $client->messages->create(
+                // Where to send a text message (your cell phone?)
+                '+593998451174',
+                array(
+                    'from' => $twilio_number,
+                    'body' => 'I sent this message in under 10 minutes!'
+                )
+            );
+            return response()->json([
+                'status' => 200,
+                'message' => 'Mensaje enviado correctamente.',
+                'data' => $client
+            ], 200);
+        }catch (Exception $e) {
             return response()->json([
                 'status' => $e->getCode(),
                 'message' => 'Ocurrio un error!.',
