@@ -62,6 +62,26 @@ class PagosController extends Controller
         }
     }
 
+    public function listarPagosPorTarjeta($idTarjeta)
+    {
+        try {
+            $pagos = Pagos::where('user_tarjeta_id', $idTarjeta)->get();
+
+            return response()->json([
+                'status' => 200,
+                'message' => 'Lista de pagos recuperada con éxito.',
+                'data' => $pagos
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => $e->getCode(),
+                'message' => 'Ocurrió un error al recuperar la lista de pagos.',
+                'data' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
     // public function actualizarSocialesTarjeta(Request $request, $id)
     // {
     //     try {

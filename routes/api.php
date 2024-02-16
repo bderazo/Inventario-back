@@ -87,9 +87,7 @@ Route::controller(SocialesTarjetaController::class)->group(function () {
 //PAGOS REALIZADOS A CADA USUARIO POR SUS VENTAS
 Route::controller(PagosController::class)->group(function () {
     Route::post('pagos/realizados/crear', 'crearPago');
-    Route::post('pagos/realizados/actualizar/{id}', 'actualizarPago');
-    Route::post('pagos/realizados/ver/{id}', 'verPago');
-    Route::post('pagos/realizados/listar', 'listarPagos');
+    Route::get('pagos/tarjeta/{id}', 'listarPagosPorTarjeta');
 });
 
 //CONFIGURACIONES DE TARJETA DE USUARIO
