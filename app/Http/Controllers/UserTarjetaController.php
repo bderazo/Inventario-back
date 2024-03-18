@@ -226,7 +226,7 @@ class UserTarjetaController extends Controller
     public function listadoTarjetas()
     {
         try {
-            $tarjetas = UserTarjeta::with('comercio_id', 'usuario_id', 'pagos')->whereNotNull('usuario_id')->get();
+            $tarjetas = UserTarjeta::with('comercio_id', 'usuario_id', 'pagos', 'puntos.promocion')->whereNotNull('usuario_id')->get();
             return ($tarjetas != null) ?
                 response()->json([
                     'status' => 200,

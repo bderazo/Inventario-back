@@ -6,6 +6,7 @@ use App\Models\Comercio;
 use App\Models\Mesa;
 use App\Models\Sucursal;
 use App\Models\TipoComercio;
+use App\Models\UsuarioComercio;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -238,28 +239,29 @@ class ComercioController extends Controller
     public function listarComercios()
     {
         try {
-            $lst_comercios = Comercio::with('tipo_comercio')->paginate(10);
-            if ($lst_comercios != null) {
+            $lst_comercios = Comercio::with('tipo_comercio', 'usuarios', 'usuarios.usuario', 'usuarios.usuario.userTarjeta')->paginate(10);
+
+            if ($lst_comercios->count()) {
                 return response()->json([
                     'status' => 200,
-                    'message' => 'Lista de entidades comerciales. ',
+                    'message' => 'Lista de entidades comerciales.',
                     'data' => $lst_comercios
                 ]);
             } else {
                 return response()->json([
-                    'status' => 200,
-                    'message' => 'No existen entidades comerciales',
-                    'data' => $lst_comercios
+                    'status' => 204,
+                    'message' => 'No existen entidades comerciales registradas.'
                 ]);
             }
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => $th->getCode(),
-                'message' => 'Ocurrio un error!. ',
+                'message' => 'Ocurrio un error!',
                 'data' => $th->getMessage()
             ], $th->getCode());
         }
     }
+
 
     public function crearSucursal(Request $request)
     {
@@ -469,4 +471,5 @@ class ComercioController extends Controller
             ], $th->getCode());
         }
     }
+
 }

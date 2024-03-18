@@ -80,6 +80,11 @@ class UserTarjeta extends Model
         return $this->hasMany(PlanTarjetas::class);
     }
 
+    public function puntos(): HasMany
+    {
+        return $this->hasMany(Puntos::class);
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

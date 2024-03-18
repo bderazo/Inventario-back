@@ -27,6 +27,7 @@ class UsuarioController extends Controller
                 'correo' => 'required|unique:usuarios,correo',
                 'password' => 'required',
                 'rol' => 'required',
+                'identificacion' => 'unique:usuarios,identificacion',
                 'registrado_por' => 'required'
             ]);
             if ($validator->fails()) {
@@ -114,7 +115,7 @@ class UsuarioController extends Controller
     public function listarUsuarios(Request $request)
     {
         try {
-            $lst_comercios = Usuario::paginate(10);
+            $lst_comercios = Usuario::with('comercios', 'comercios.comercio')->get();
             if ($lst_comercios != null) {
                 return response()->json([
                     'status' => 200,

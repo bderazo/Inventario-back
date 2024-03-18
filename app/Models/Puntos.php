@@ -7,29 +7,34 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class UsuarioComercio extends Model
+class Puntos extends Model
 {
-    use HasFactory,Uuid;
-    protected $table = 'usuario_comercio';
+    use HasFactory, Uuid;
+    protected $table = 'puntos';
     public $incrementing = false;
     protected $keyType = 'uuid';
     protected $fillable = [
-        'usuario_id',
-        'comercio_id',
-        'rol',
+        'cantidad',
+        'user_tarjeta_id',
+        'user_registra',
+        'detalle',
         'estado',
-        'registrado_por'
     ];
 
-    public function comercio()
+    public function user_tarjeta_id(): BelongsTo
     {
-        return $this->belongsTo(Comercio::class);
+        return $this->belongsTo(UserTarjeta::class, 'id');
     }
 
-    public function usuario()
+    public function user_registra(): BelongsTo
     {
-        return $this->belongsTo(Usuario::class);
+        return $this->belongsTo(UserTarjeta::class, 'id');
     }
+
+    public function promocion(): BelongsTo
+{
+    return $this->belongsTo(Promociones::class, 'detalle');
+}
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
@@ -50,5 +55,4 @@ class UsuarioComercio extends Model
     {
         return [];
     }
-
 }

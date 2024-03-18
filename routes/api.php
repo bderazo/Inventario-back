@@ -10,6 +10,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\ComercioController;
 use App\Http\Controllers\BeerController;
 use App\Http\Controllers\PagosController;
+use App\Http\Controllers\FidelizacionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -120,4 +121,11 @@ Route::controller(BeerController::class)->group(function () {
     Route::get('sensor/maquina/venta', 'crearVenta');
     Route::post('sensor/ventas/ver', 'verVentas');
     Route::post('sensor/ventas/pagar', 'pagarVentas');
+});
+
+//SOCIALES DE TARJETA DE USUARIO
+Route::controller(FidelizacionController::class)->group(function () {
+    Route::post('puntos/fidelizacion/crear', 'crearPuntos');
+    Route::post('promociones/fidelizacion/crear', 'crearPromociones');
+    Route::post('promociones/fidelizacion/listar', 'listarPromociones');
 });

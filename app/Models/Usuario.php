@@ -56,6 +56,11 @@ class Usuario extends Authenticatable implements JWTSubject, CanResetPassword
         return $this->hasMany(BeerRfid::class);
     }
 
+    public function comercios()
+    {
+        return $this->hasMany(UsuarioComercio::class);
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
@@ -77,3 +82,4 @@ class Usuario extends Authenticatable implements JWTSubject, CanResetPassword
     }
 
 }
+
